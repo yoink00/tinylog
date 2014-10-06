@@ -36,7 +36,7 @@ SOFTWARE.
 #define TINY_LOG_WARNING 0x04
 #define TINY_LOG_TRACE   0x08
 #define TINY_LOG_DEBUG   0x16
-#define TINY_LOG_DEFAULT (TINY_LOG_INFO | TINY_LOG_ERROR)
+#define TINY_LOG_DEFAULT (TINY_LOG_INFO | TINY_LOG_ERROR | TINY_LOG_WARNING)
 
 // Short logging macros
 #define tiny_info(M, ...)\
