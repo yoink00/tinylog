@@ -126,7 +126,10 @@ void tiny_log(unsigned char level,
                  function,
                  line,
                  message);
-        vprintf(tmpMsg, arg_list);
+
+	char newMsg[1024];
+        vsnprintf(newMsg, 1024, tmpMsg, arg_list);
+	puts(newMsg);
 
         va_end(arg_list);
     }
