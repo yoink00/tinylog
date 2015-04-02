@@ -29,5 +29,7 @@
 *.hex
 
 # Ignore build and install dirs
-build/
+build
 install/
+Release/
+Debug/

@@ -25,6 +25,11 @@ SOFTWARE.
 #ifndef __TINY_LOG_H__
 #define __TINY_LOG_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -73,5 +78,9 @@ void tiny_log(unsigned char level,
                const char* function, ...);
 
 void tiny_log_pretty_print(unsigned char level, char* buf, size_t size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //__TINY_LOG_H__
