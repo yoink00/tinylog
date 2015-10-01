@@ -40,7 +40,7 @@ extern "C"
 #define TINY_LOG_ERROR   0x02
 #define TINY_LOG_WARNING 0x04
 #define TINY_LOG_TRACE   0x08
-#define TINY_LOG_DEBUG   0x16
+#define TINY_LOG_DEBUG   0x10
 
 #ifndef NDEBUG
     #define TINY_LOG_DEFAULT (TINY_LOG_INFO | TINY_LOG_ERROR | TINY_LOG_WARNING | TINY_LOG_DEBUG)
@@ -68,6 +68,7 @@ extern "C"
     tiny_log(L, M, __FILE__, __LINE__, __func__, ##__VA_ARGS__)
 
 void tiny_set_log_level(unsigned char level);
+void tiny_unset_log_level(unsigned char level);
 
 bool tiny_is_log_level(unsigned char level);
 

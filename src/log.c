@@ -28,6 +28,7 @@ SOFTWARE.
 #include <sys/time.h>
 #include <time.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "log.h"
 
@@ -40,19 +41,116 @@ static const char* TINY_LOG_DEBUG_STR   = "DBG";
 
 static unsigned char g_tiny_log_level = TINY_LOG_DEFAULT;
 
-/*__attribute__((constructor)) void tiny_log_init()
+__attribute__((constructor)) void tiny_log_init()
 {
     tiny_info("Loaded libtinylog.so");
-}
 
-void tiny_set_log_level_msg(const char* args[])
-{
-    tiny_info("Received a 'set_log_level_msg'");
-}*/
+    char *env = getenv("TINYLOG_LEVEL");
+    if(env == NULL)
+    {
+        tiny_info("No TINYLOG_LEVEL specified");
+    }
+    else
+    {
+        env = strdup(env);
+
+        char *level = strtok(env, " ");
+        while(level != NULL)
+        {
+            bool do_unset = false;
+            if(level[0] == '!' && level[1] != '\0')
+            {
+                do_unset = true;
+                level++;
+            }
+
+            if(strcmp(level, TINY_LOG_INFO_STR) == 0)
+            {
+                if(!do_unset)
+                {
+                    tiny_set_log_level(TINY_LOG_INFO);
+                }
+                else
+                {
+                    tiny_unset_log_level(TINY_LOG_INFO);
+                }
+            }
+            else if(strcmp(level, TINY_LOG_ERROR_STR) == 0)
+            {
+                if(!do_unset)
+                {
+                    tiny_set_log_level(TINY_LOG_ERROR);
+                }
+                else
+                {
+                    tiny_unset_log_level(TINY_LOG_ERROR);
+                }
+            }
+            else if(strcmp(level, TINY_LOG_WARNING_STR) == 0)
+            {
+                if(!do_unset)
+                {
+                    tiny_set_log_level(TINY_LOG_WARNING);
+                }
+                else
+                {
+                    tiny_unset_log_level(TINY_LOG_WARNING);
+                }
+            }
+            else if(strcmp(level, TINY_LOG_TRACE_STR) == 0)
+            {
+                if(!do_unset)
+                {
+                    tiny_set_log_level(TINY_LOG_TRACE);
+                }
+                else
+                {
+                    tiny_unset_log_level(TINY_LOG_TRACE);
+                }
+            }
+            else if(strcmp(level, TINY_LOG_DEBUG_STR) == 0)
+            {
+                if(!do_unset)
+                {
+                    tiny_set_log_level(TINY_LOG_DEBUG);
+                }
+                else
+                {
+                    tiny_unset_log_level(TINY_LOG_DEBUG);
+                }
+            }
+            else
+            {
+                tiny_error("Unknown log level: %s", level);
+            }
+
+            level = strtok(NULL, " ");
+        }
+
+        free(env);
+    }
+
+    tiny_info(
+        "Logging level:\n\tInfo: %s\n\tError: %s\n\tWarning: %s\n\tTrace: %s\n\tDebug: %s\n",
+        (tiny_is_log_level(TINY_LOG_INFO) ? "true" : "false"),
+        (tiny_is_log_level(TINY_LOG_ERROR) ? "true" : "false"),
+        (tiny_is_log_level(TINY_LOG_WARNING) ? "true" : "false"),
+        (tiny_is_log_level(TINY_LOG_TRACE) ? "true" : "false"),
+        (tiny_is_log_level(TINY_LOG_DEBUG) ? "true" : "false"));
+
+}
 
 void tiny_set_log_level(unsigned char level)
 {
     g_tiny_log_level |= level;
+}
+
+void tiny_unset_log_level(unsigned char level)
+{
+    if((g_tiny_log_level & level) == level)
+    {
+        g_tiny_log_level ^= level;
+    }
 }
 
 bool tiny_is_log_level(unsigned char level)
